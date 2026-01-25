@@ -1,5 +1,6 @@
 package com.hudissonxavier.avisame.controller.agenda;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,11 +37,13 @@ public class DailyTaskController {
      * @return 201 Created com os dados da tarefa
      */
     @PostMapping("/create")
-    public ResponseEntity<DailyTaskDTO> create(@RequestBody DailyTaskDTO dto, Authentication authentication) {
+    public ResponseEntity<?> create(@RequestBody DailyTaskDTO dto, Authentication authentication) {
 
         UserModel user = (UserModel) authentication.getPrincipal();
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(dailyTaskService.create(dto, user));
+        dailyTaskService.create(dto, user);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("sucesso", "Tarefa criada com exito");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -62,15 +65,19 @@ public class DailyTaskController {
      * @return // Retorna o DTO com status 200 OK
      */
     @PutMapping("/edit/{id}")
-    public ResponseEntity<DailyTaskDTO> update(
+    public ResponseEntity<?> update(
             @PathVariable UUID id,
             @RequestBody DailyTaskDTO taskDto,
             @AuthenticationPrincipal UserModel currentUser // Injeta o usuário logado automaticamente
     ) {
         // Chama o serviço passando o DTO e o usuário autenticado
-        DailyTaskDTO updatedTask = dailyTaskService.update(id, taskDto, currentUser);
+        dailyTaskService.update(id, taskDto, currentUser);
 
-        return ResponseEntity.ok(updatedTask);
+        // Definie a mensagem de retorno
+        HashMap<String, String> response = new HashMap<>();
+        response.put("sucesso", "Tarefa editada com sucesso");
+
+        return ResponseEntity.ok(response);
     }
 
     /**
