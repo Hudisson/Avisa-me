@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.hudissonxavier.avisame.dto.users.LoginRequestDTO;
 import com.hudissonxavier.avisame.dto.users.LoginResponseDTO;
 import com.hudissonxavier.avisame.dto.users.UserRequestDTO;
-import com.hudissonxavier.avisame.dto.users.UserResponseDTO;
 import com.hudissonxavier.avisame.service.users.AuthService;
 import com.hudissonxavier.avisame.service.users.UserService;
 
@@ -47,7 +46,9 @@ public class AuthController {
         try {
 
             // Delega a criação para o serviço de usuário - Tenta criar o usuário
-            UserResponseDTO response = userService.create(dto);
+            userService.create(dto);
+            HashMap<String, String> response = new HashMap<>();
+            response.put("sucesso", "Conta criada com sucesso");
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         }catch (ResponseStatusException ex){
@@ -57,8 +58,7 @@ public class AuthController {
              * Se o e-mail já existe, retorna conflito (409) com um JSON simples
              */
             HashMap<String, Object> response = new HashMap<>();
-            response.put("status", HttpStatus.CONFLICT.value());
-            response.put("message", "O e-mail informado já está em uso");
+            response.put("erro", "O e-mail informado já está em uso");
 
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
