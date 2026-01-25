@@ -37,7 +37,7 @@ public class UserConfigController {
      * Rota para salva o horário desejado para o envio dos e-mails
      * @param dto            Dados do evento a ser registrado no banco de dados
      * @param authentication Objeto de autenticação contendo o UserModel (token JWT)
-     * @return 200 Ok
+     * @return 201 CREATED
      */
     @PostMapping("/create")
     public ResponseEntity<?> createConfigHour(@RequestBody UserConfigDTO dto,
