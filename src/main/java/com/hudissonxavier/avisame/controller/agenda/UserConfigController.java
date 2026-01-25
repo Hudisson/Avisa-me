@@ -2,6 +2,7 @@ package com.hudissonxavier.avisame.controller.agenda;
 
 import java.util.HashMap;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,10 +40,20 @@ public class UserConfigController {
      * @return 200 Ok
      */
     @PostMapping("/create")
-    public ResponseEntity<UserConfigDTO> createConfigHour(@RequestBody UserConfigDTO dto,
+    public ResponseEntity<?> createConfigHour(@RequestBody UserConfigDTO dto,
             Authentication authentication) {
         UserModel user = (UserModel) authentication.getPrincipal();
-        return ResponseEntity.ok(service.saveConfig(dto, user));
+
+        // Sava a perefereência de horário do usuário
+        service.saveConfig(dto, user);
+
+        // Definir a mensagem de retorno
+        HashMap<String, String> response = new HashMap<>();
+        response.put("sucesso", "Preferência de horário definida com sucesso");
+        
+        // Retona 201 e a mensagem de retorno
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
     }
 
     /**

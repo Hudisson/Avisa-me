@@ -38,11 +38,18 @@ public class ScheduledEventController {
     * @return 201 Created com os dados do evento
     */
     @PostMapping("/create")
-    public ResponseEntity<ScheduledEventDTO> create(@RequestBody ScheduledEventDTO dto, Authentication authentication) {
+    public ResponseEntity<?> create(@RequestBody ScheduledEventDTO dto, Authentication authentication) {
+
         UserModel user = (UserModel) authentication.getPrincipal();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto, user));
-        //return ResponseEntity.ok(service.create(dto, user));
+        // Salva o evento para o respectivo usuário
+        service.create(dto, user);
+
+        // Define a mesnsagem de retorno
+        HashMap<String, String> response = new HashMap<>();
+        response.put("sucesso", "Evento criado com sucesso");
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -105,17 +112,22 @@ public class ScheduledEventController {
      * @return 200 e os dados do evento que foi editado
      */
     @PutMapping("/edit/{id}")
-    public ResponseEntity<ScheduledEventDTO> update(
+    public ResponseEntity<?> update(
         @PathVariable UUID id,
         @RequestBody ScheduledEventDTO eventDto,
         @AuthenticationPrincipal UserModel currentUser // Injeta o usuário logado automaticamente
     ){
 
         // Chama o serviço passando o DTO e o usuário autenticado
-        ScheduledEventDTO updatedEvent = service.update(id, eventDto, currentUser);
+        //ScheduledEventDTO updatedEvent = service.update(id, eventDto, currentUser);
+        service.update(id, eventDto, currentUser);
 
-        // Retorna o DTO com status 200 OK
-        return ResponseEntity.ok(updatedEvent);
+        // Define a mesnsagem de retorno
+        HashMap<String, String> response = new HashMap<>();
+        response.put("sucesso", "Evento editado com sucesso");
+
+        // Retorna a mensagem de sucesso com status 200 OK
+        return ResponseEntity.ok(response);
 
     }
 

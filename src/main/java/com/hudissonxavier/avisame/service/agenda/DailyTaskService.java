@@ -1,6 +1,5 @@
 package com.hudissonxavier.avisame.service.agenda;
 
-import java.time.DayOfWeek;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,9 +34,9 @@ public class DailyTaskService {
         return DailyTaskDTO.fromModel(model);
     }
 
-    // Método service para listar as tarefas do usuário logado
+    // Método service para listar as tarefas do usuário logado por dia da semana
     public List<DailyTaskDTO> listAllFromUser(UUID userId) {
-        return repository.findByUserIdAndIsActiveTrue(userId)
+        return repository.findAllByUserIdOrderByDayOfWeek(userId)
                 .stream()
                 .map(DailyTaskDTO::fromModel)
                 .collect(Collectors.toList());
@@ -54,13 +53,6 @@ public class DailyTaskService {
         }
 
         repository.delete(task);
-    }
-
-    public List<DailyTaskDTO> listByDay(UUID userId, DayOfWeek dayOfWeek) {
-        return repository.findByUserIdAndDayOfWeekAndIsActiveTrue(userId, dayOfWeek)
-                .stream()
-                .map(DailyTaskDTO::fromModel)
-                .collect(Collectors.toList());
     }
 
      // Método service para atualizar/editar uma tarefa

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.hudissonxavier.avisame.model.agenda.DailyTaskModel;
@@ -13,7 +15,7 @@ import com.hudissonxavier.avisame.model.agenda.DailyTaskModel;
 public interface DailyTaskRepository extends JpaRepository<DailyTaskModel, UUID> {
     
     /**
-     * Busca todos os afazeres de um usuário específico que estão ativos.
+     * Busca todas as tarefas com status ativa (true) de um usuário específico.
      * O Spring Data JPA filtra automaticamente pelo ID do usuário vinculado.
      */
     List<DailyTaskModel> findByUserIdAndIsActiveTrue(UUID userId);
@@ -24,4 +26,10 @@ public interface DailyTaskRepository extends JpaRepository<DailyTaskModel, UUID>
     
     // Busca todas as tarefas do usuário (independente do dia)
     List<DailyTaskModel> findByUserId(UUID userId);
+
+
+    // Busca as tarefas ordenadas po dia da semana
+    @Query("SELECT t FROM DailyTaskModel t WHERE t.user.id = :userId " +
+       "ORDER BY FIELD(t.dayOfWeek, 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY')")
+    List<DailyTaskModel> findAllByUserIdOrderByDayOfWeek(@Param("userId") UUID userId);
 }

@@ -42,7 +42,7 @@ public class DailyTaskController {
         UserModel user = (UserModel) authentication.getPrincipal();
         dailyTaskService.create(dto, user);
         HashMap<String, String> response = new HashMap<>();
-        response.put("sucesso", "Tarefa criada com exito");
+        response.put("sucesso", "Tarefa criada com sucesso");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
