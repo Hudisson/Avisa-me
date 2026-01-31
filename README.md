@@ -22,7 +22,7 @@ Method: 🟢 POST <br>
     "password": "senha123"
 }
  ```
-OBS.: *utilise um email válido*
+OBS.: *utilize um email válido*
 
 - **Response** ( 201 Created ):
 ```json
@@ -309,7 +309,7 @@ Method: 🟢 POST <br>
 
  <hr> 
 
-### Definir horário para receber as notificações
+### Definir e editar horário para receber as notificações
 
 14) #### Definir horário
    Method: 🟢 POST <br>
@@ -347,3 +347,33 @@ Method: 🟢 POST <br>
 ```
 
 - **Erro** 403 forbidden
+
+16) #### Editar horário das notificações
+   Method: 🟡 PUT <br>
+   `http://localhost:8080/config/update-time`
+  - **Request body** ( JSON ):
+     - Auth: Bearer Token ( JWT )
+```json
+{
+  "preferredHour": "HH:MM"
+}
+```
+  - **Response** ( 200 OK ):
+```json
+{
+ "sucesso": "Horário de notificação atualizado com sucesso!"
+}
+```
+- **Erro** 403 forbidden
+
+ <hr> 
+
+### Logout
+
+17) #### Deslogar (Logout)
+   Method: 🟢 POST <br>
+   `http://localhost:8080/auth/logout`
+  - **Request body**:
+    - Auth: Berarer Token ( JWT )
+
+  - **Response** ( 204 No content ):
