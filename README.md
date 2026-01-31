@@ -19,7 +19,7 @@ Method: 🟢 POST <br>
     "password": "senha123"
 }
  ```
-OBS.: *use um email válido*
+OBS.: *utilise um email válido*
 
 - **Response** (Status: 201 Created):
 ```json
@@ -31,7 +31,7 @@ OBS.: *use um email válido*
   `409 Conflict`: Caso o e-mail já esteja em uso.
 ```json
 {
-    "message": "O e-mail informado já está em uso"
+    "erro": "O e-mail informado já está em uso"
 }
 ```
 <hr>
@@ -61,7 +61,7 @@ Method: 🟢 POST <br>
         
 ```json
 {
-    "message": "Usuário ou senha inválidos"
+    "erro": "Usuário ou senha inválidos"
 }
 ```
 
