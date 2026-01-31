@@ -207,7 +207,7 @@ Method: 🟢 POST <br>
    Method: 🟢 POST <br>
    `http://localhost:8080/events/create`
   - **Request body** ( JSON ):
-    - Auth: Berarer Token ( JWT )
+    - Auth: Bearer Token ( JWT )
 ```json
 {
     "title": "Título do evento",
@@ -315,7 +315,7 @@ Method: 🟢 POST <br>
    Method: 🟢 POST <br>
    `http://localhost:8080/config/create`
   - **Request body** ( JSON ):
-    - Auth: Berarer Token ( JWT )
+    - Auth: Bearer Token ( JWT )
 ```json
 {
 	"preferredHour": "HH:MM" 
@@ -374,6 +374,6 @@ Method: 🟢 POST <br>
    Method: 🟢 POST <br>
    `http://localhost:8080/auth/logout`
   - **Request body**:
-    - Auth: Berarer Token ( JWT )
+    - Auth: Bearer Token ( JWT )
 
   - **Response** ( 204 No content ):
