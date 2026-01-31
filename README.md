@@ -6,6 +6,9 @@ O diferencial do projeto é o motor de agendamento dinâmico que processa as fil
 ## **⚠️ Em desenvolvimento**...
 
 ## Rotas da API
+
+### Criar e editar usuário
+
 1) #### Rota para registrar um novo usuário.
 Method: 🟢 POST <br>
    
@@ -68,7 +71,7 @@ Method: 🟢 POST <br>
    Method: 🔵 GET <br>
    `http://localhost:8080/auth/login`
   - **Request body** ( JSON ):
-    - Auth: Berarer Token ( JWT )
+    - Auth: Bearer Token ( JWT )
    
 - **Response** ( 200 OK ):
 
@@ -88,7 +91,7 @@ Method: 🟢 POST <br>
    Method: 🟡 PUT <br>
     `http://localhost:8080/users/edit`
    
-    - Auth: Berarer Token ( JWT )
+    - Auth: Bearer Token ( JWT )
   
 - **Response** ( 200 OK ):
    
@@ -105,20 +108,25 @@ Method: 🟢 POST <br>
    `http://localhost:8080/users/delete-me`
    
 - **Request body** ( JSON ):
- - Auth: Berarer Token ( JWT )
+  - Auth: Bearer Token ( JWT )
 ```json
 {
-   "id": "UUID"
+   "id": "UUID-do-usuario"
 }
 ```
 
 - **Response** ( 204 No content ):
 
+ <hr> 
+
+### Criar e editar tarefas
+
 6) #### Criar uma tarefa
    Method: 🟢 POST <br>
    `http://localhost:8080/tasks/create`
   - **Request body** ( JSON ):
-    - Auth: Berarer Token ( JWT )
+     - Auth: Bearer Token ( JWT )
+
 ```json
 {
   	"title": "Título da tarefa",
@@ -140,7 +148,7 @@ Method: 🟢 POST <br>
     Method: 🟡 PUT <br>
    `http://localhost:8080/tasks/edit/UUID-da-tarefa`
   - **Request body** ( JSON ):
-    - Auth: Berarer Token ( JWT )
+     - Auth: Bearer Token ( JWT )
 ```json
 {
   	"title": "Título",
@@ -162,7 +170,7 @@ Method: 🟢 POST <br>
     Method:🔵 GET <br>
    `http://localhost:8080/tasks/my-tasks`
   - **Request body** ( JSON ):
-    - Auth: Berarer Token ( JWT )
+     - Auth: Bearer Token ( JWT )
 
   - **Response** ( 200 OK ):
 
@@ -179,4 +187,163 @@ Method: 🟢 POST <br>
 	},
 ]
 ```
+- **Erro** 403 forbidden
+
+9) #### Deletar uma tarefa
+      Method: 🔴 DELETE <br>
+   `http://localhost:8080/tasks/delete/UUID-da-tarefa`
+   
+- **Request body**:
+ 	 - Auth: Bearer Token ( JWT )
+
+- **Response** ( 204 No content ):
+- **Erro** 403 forbidden
+
+ <hr> 
+
+### Criar e editar eventos
+
+10) #### Criar um evento
+   Method: 🟢 POST <br>
+   `http://localhost:8080/events/create`
+  - **Request body** ( JSON ):
+    - Auth: Berarer Token ( JWT )
+```json
+{
+    "title": "Título do evento",
+	"description": "Descrição do evento",
+	"eventDate": "YYYY-MM-DD"
+}
+```
+  - **Response** ( 200 OK ):
+```json
+{
+  "sucesso": "Evento criado com sucesso"
+}
+```
+- **Erro** 403 forbidden
+
+11) #### Editar um evento
+   Method: 🟡 PUT <br>
+   `http://localhost:8080/events/edit/UUID-do-evento`
+  - **Request body** ( JSON ):
+     - Auth: Bearer Token ( JWT )
+```json
+{
+    "title": "Título do evento",
+	"description": "Descrição do evento",
+	"eventDate": "YYYY-MM-DD"
+}
+```
+  - **Response** ( 200 OK ):
+```json
+{
+ "sucesso": "Evento editado com sucesso"
+}
+```
+- **Erro** 403 forbidden
+
+12) #### Listar todos os evento do usuário
+    Method:🔵 GET <br>
+   `http://localhost:8080/events/list`
+  - **Request body** ( JSON ):
+     - Auth: Bearer Token ( JWT )
+
+  - **Response** ( 200 OK ):
+
+```json
+[
+	{
+		"id": "UUID-do-evento",
+		"title": "Título do evento",
+		"description": "Descrição do evento",
+		"eventDate": "YYYY-MM-DD",
+		"isNotified": false,
+		"eventCreatedAt": "2026-01-25T11:44:00",
+		"eventUpdatedAt": "2026-01-25T12:04:33"
+	},
+]
+```
+- **Erro** 403 forbidden
+
+12) #### Listar todos os evento do dia atual do usuário
+    Method:🔵 GET <br>
+   `http://localhost:8080/events/today`
+  - **Request body**:
+     - Auth: Bearer Token ( JWT )
+
+  - **Response** ( 200 OK ):
+
+```json
+[
+	{
+		"id": "UUID-do-evento",
+		"title": "Título do evento",
+		"description": "Descrição do evento",
+		"eventDate": "YYYY-MM-DD",
+		"isNotified": false,
+		"eventCreatedAt": "2026-01-12T17:27:40",
+		"eventUpdatedAt": "2026-01-31T22:18:14"
+	}
+]
+```
+
+<br> caso não tenha eventos agendados
+
+```json
+{
+	"date": "YYYY-MM-DD",
+	"message": "Você não tem eventos agendado para hoje"
+}
+```
+- **Erro** 403 forbidden
+
+13) #### Deletar um evento do usuário
+      Method: 🔴 DELETE <br>
+   `http://localhost:8080/events/delete/UUID-do-evento`
+   
+- **Request body**:
+   - Auth: Bearer Token ( JWT )
+
+- **Response** ( 204 No content ):
+
+ <hr> 
+
+### Definir horário para receber as notificações
+
+14) #### Definir horário
+   Method: 🟢 POST <br>
+   `http://localhost:8080/config/create`
+  - **Request body** ( JSON ):
+    - Auth: Berarer Token ( JWT )
+```json
+{
+	"preferredHour": "HH:MM" 
+}
+```
+  - **Response** ( 201 Created ):
+```json
+{
+  "sucesso": "Horário para receber as notificações definido com sucesso"
+}
+```
+- **Erro** 403 forbidden
+
+15) #### Buscar horário definido
+    Method:🔵 GET <br>
+   `http://localhost:8080/config`
+  - **Request body**:
+     - Auth: Bearer Token ( JWT )
+
+  - **Response** ( 200 OK ):
+
+```json
+	"id": "UUID-do-horario",
+	"user": null,
+	"preferredHour": "12:50:00",
+	"cronExpression": "0 50 12 * * *",
+	"configCreatedAt": "2026-01-12T14:42:23",
+	"configUpdatedAt": "2026-01-25T12:49:07"
+```
+
 - **Erro** 403 forbidden
