@@ -11,7 +11,7 @@ Method: 🟢 POST <br>
    
 `http://localhost:8080/auth/register`
 
-- **Request Body** (JSON):
+- **Request Body** ( JSON ):
 ```json
 {
     "name": "Nome do Usuário",
@@ -21,7 +21,7 @@ Method: 🟢 POST <br>
  ```
 OBS.: *utilise um email válido*
 
-- **Response** (Status: 201 Created):
+- **Response** ( 201 Created ):
 ```json
 {
   "sucesso", "Conta criada com sucesso"
@@ -40,14 +40,14 @@ OBS.: *utilise um email válido*
 Method: 🟢 POST <br> 
  
 `http://localhost:8080/auth/login`
-- **Request Body** (JSON):
+- **Request Body** ( JSON ):
 ```json
 {
     "email": "email@example.com",
     "password": "senha123"
 }
 ```
-- **Response** (Status: 200 OK):
+- **Response** ( 200 OK ):
     
 ```json
 {
@@ -64,4 +64,119 @@ Method: 🟢 POST <br>
     "erro": "Usuário ou senha inválidos"
 }
 ```
+3) #### Rota para obter dados do usuário logado
+   Method: 🔵 GET <br>
+   `http://localhost:8080/auth/login`
+  - **Request body** ( JSON ):
+    - Auth: Berarer Token ( JWT )
+   
+- **Response** ( 200 OK ):
 
+```json
+{
+   "id": "UUID",
+   "name": "Nome do usuário",
+	"email": "exemplo@email.com",
+	"userCreatedAt": "2026-01-12T10:55:26",
+	"userUpdatedAt": "2026-01-12T12:11:01"
+}
+```
+- **Erros**:
+   - `403 forbidden `: No body returned for response
+
+4) #### Rota para editar as informações do usuário
+   Method: 🟡 PUT <br>
+    `http://localhost:8080/users/edit`
+   
+    - Auth: Berarer Token ( JWT )
+  
+- **Response** ( 200 OK ):
+   
+```json
+{
+   "sucesso": "Informações atualizada com sucesso"
+}
+```
+- **Erros**:
+   - `403 forbidden `: No body returned for response
+
+5) #### Deletar conta do usuário
+      Method: 🔴 DELETE <br>
+   `http://localhost:8080/users/delete-me`
+   
+- **Request body** ( JSON ):
+ - Auth: Berarer Token ( JWT )
+```json
+{
+   "id": "UUID"
+}
+```
+
+- **Response** ( 204 No content ):
+
+6) #### Criar uma tarefa
+   Method: 🟢 POST <br>
+   `http://localhost:8080/tasks/create`
+  - **Request body** ( JSON ):
+    - Auth: Berarer Token ( JWT )
+```json
+{
+  	"title": "Título da tarefa",
+	"description": "Descrição da tarefa",
+	"dayOfWeek": "SUNDAY",
+	"isActive": true
+}
+```
+  - **Response** ( 200 OK ):
+```json
+{
+  "sucesso": "Tarefa criada com sucesso"
+}
+```
+- **Erro** 403 forbidden
+
+
+7) #### Editar uma tarefa
+    Method: 🟡 PUT <br>
+   `http://localhost:8080/tasks/edit/UUID-da-tarefa`
+  - **Request body** ( JSON ):
+    - Auth: Berarer Token ( JWT )
+```json
+{
+  	"title": "Título",
+	"description": "Descrição",
+	"dayOfWeek": "WEDNESDAY",
+	"isActive": true
+}
+```
+  - **Response** ( 200 OK ):
+
+```json
+{
+  "sucesso": "Tarefa editada com sucesso"
+}
+```
+- **Erro** 403 forbidden
+
+8) #### Listar todas as tarfas do usuário
+    Method:🔵 GET <br>
+   `http://localhost:8080/tasks/my-tasks`
+  - **Request body** ( JSON ):
+    - Auth: Berarer Token ( JWT )
+
+  - **Response** ( 200 OK ):
+
+```json
+[
+	{
+		"id": "UUID-da-tarefa",
+		"title": "Título da tarefa",
+		"description": " Descrição da tarefa",
+		"isActive": true,
+		"dayOfWeek": "MONDAY",
+		"taskCreatedAt": "2026-01-12T11:02:02",
+		"taskUpdatedAt": "2026-01-12T08:02:02"
+	},
+]
+```
+- **Erro** 403 forbidden
