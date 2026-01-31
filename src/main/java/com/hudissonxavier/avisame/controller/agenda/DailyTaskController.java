@@ -44,7 +44,6 @@ public class DailyTaskController {
         HashMap<String, String> response = new HashMap<>();
         response.put("sucesso", "Tarefa criada com sucesso");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        
     }
 
     /**

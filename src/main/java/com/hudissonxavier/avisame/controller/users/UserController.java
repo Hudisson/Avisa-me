@@ -1,5 +1,8 @@
 package com.hudissonxavier.avisame.controller.users;
 
+import java.util.HashMap;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,7 +57,7 @@ public class UserController {
      * @return
      */
     @PutMapping("/edit")
-    public ResponseEntity<UserResponseDTO> editUser(
+    public ResponseEntity<?> editUser(
             @RequestBody UpdateUserRequestDTO dto, // Dados novos vindos do corpo da requisição (JSON)
             Authentication authentication // Token com os dados do usuário logado
     ) {
@@ -68,7 +71,9 @@ public class UserController {
         }
 
         // Se a verificação passar, envia para a camada de serviço realizar o update
-        return ResponseEntity.ok(userService.update(dto.getId(), dto));
+        HashMap<String, String> response = new HashMap<>();
+        response.put("sucesso", "Informações atualizada com sucesso");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
    
