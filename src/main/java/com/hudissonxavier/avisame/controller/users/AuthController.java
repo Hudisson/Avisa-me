@@ -85,8 +85,7 @@ public class AuthController {
              * Caso as credenciais estejam incorretas, retorna um JSON simples com status e mensagem
              */ 
             Map<String, Object> response = new HashMap<>();
-            response.put("status", HttpStatus.UNAUTHORIZED.value());
-            response.put("message", "E-mail ou senha inválidos");
+            response.put("erro", "E-mail ou senha inválidos");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 

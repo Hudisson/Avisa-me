@@ -49,7 +49,7 @@ public class UserConfigController {
 
         // Definir a mensagem de retorno
         HashMap<String, String> response = new HashMap<>();
-        response.put("sucesso", "Preferência de horário definida com sucesso");
+        response.put("sucesso", "Horário para receber as notificações definido com sucesso");
         
         // Retona 201 e a mensagem de retorno
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
