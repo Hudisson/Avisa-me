@@ -1,0 +1,48 @@
+
+services:
+  # Container do Banco de Dados
+  db:
+    image: mysql:8.0
+    container_name: avisame-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: dbavisame
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user_avisame
+      MYSQL_PASSWORD: password_avisame
+    ports:
+      - "3304:3306"
+    networks:
+      - userapi-network
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Container da API Java
+  api:
+    build:
+      context: .
+      dockerfile: docker/java/Dockerfile
+    container_name: avisame-api
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    environment:
+      # Importante: O host do DB passa a ser o nome do serviço 'db'
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/avisame_db?useTimezone=true&serverTimezone=America/Sao_Paulo&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: user_avisame
+      SPRING_DATASOURCE_PASSWORD: password_avisame
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+       # Variável de segurança JWT
+      API_SECURITY_TOKEN_SECRET: ${JWT_SECRET:-CHAVE-AQUI}
+
+    networks:
+      - userapi-network
+
+networks:
+  userapi-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
