@@ -69,7 +69,7 @@ Method: 🟢 POST <br>
 ```
 3) #### Rota para obter dados do usuário logado
    Method: 🔵 GET <br>
-   `http://localhost:8080/auth/login`
+   `http://localhost:8080/users/me`
   - **Request body** ( JSON ):
     - Auth: Bearer Token ( JWT )
    
