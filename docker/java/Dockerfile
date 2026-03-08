@@ -10,5 +10,5 @@ WORKDIR /app
 
 # Substitua 'avisame-0.0.1-SNAPSHOT.jar' pelo nome real do seu jar gerado no target
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8081
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

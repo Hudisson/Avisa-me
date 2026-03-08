@@ -42,6 +42,7 @@ public class UserConfigController {
     @PostMapping("/create")
     public ResponseEntity<?> createConfigHour(@RequestBody UserConfigDTO dto,
             Authentication authentication) {
+        
         UserModel user = (UserModel) authentication.getPrincipal();
 
         // Sava a perefereência de horário do usuário

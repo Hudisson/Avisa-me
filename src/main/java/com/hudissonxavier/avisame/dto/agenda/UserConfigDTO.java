@@ -28,7 +28,7 @@ public class UserConfigDTO {
                 .user(user)
                 .preferredHour(this.preferredHour) //
                 .cronExpression(generateCron())
-                .user(this.user)
+                // .user(this.user)
                 .configCreatedAt(this.configCreatedAt) //
                 .configUpdatedAt(this.configUpdatedAt) //
                 .build();
