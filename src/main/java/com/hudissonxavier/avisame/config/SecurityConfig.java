@@ -33,7 +33,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(csrf -> csrf.disable()) // Desabilita CSRF, pois a autenticação via Token é stateless
+        http
+        .csrf(csrf -> csrf.disable()) // Desabilita CSRF, pois a autenticação via Token é stateless
 
         .sessionManagement(session -> session
             .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS)
@@ -49,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers("/users/**").authenticated()
                 .requestMatchers("/tasks/**").authenticated()
                 .requestMatchers("/events/**").authenticated()
+                .requestMatchers("/config", "/config/**").authenticated()
                 
                 // Demais rotas protegidas
                 .anyRequest().authenticated()
