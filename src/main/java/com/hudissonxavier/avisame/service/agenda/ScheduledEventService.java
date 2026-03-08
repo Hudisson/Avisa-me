@@ -24,6 +24,7 @@ public class ScheduledEventService {
 
     // Método service para criar um evento
     public ScheduledEventDTO create(ScheduledEventDTO dto, UserModel user) {
+        dto.setIsNotified(false);
         ScheduledEventModel model = dto.toModel(user);
         repository.save(model);
         return ScheduledEventDTO.fromModel(model);

@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/users/**").authenticated()
                 .requestMatchers("/tasks/**").authenticated()
                 .requestMatchers("/events/**").authenticated()
+                .requestMatchers("/config", "/config/**").authenticated()
                 
                 // Demais rotas protegidas
                 .anyRequest().authenticated()

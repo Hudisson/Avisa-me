@@ -3,17 +3,19 @@ services:
   # Container do Banco de Dados
   db:
     image: mysql:8.0
+    command: --default-time-zone=America/Sao_Paulo   # Fuso horário
     container_name: avisame-db
     restart: always
     environment:
       MYSQL_DATABASE: dbavisame
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: user_avisame
-      MYSQL_PASSWORD: password_avisame
+      MYSQL_PASSWORD: senha123
+
     ports:
       - "3304:3306"
     networks:
-      - userapi-network
+      - avisame-network
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -23,25 +25,35 @@ services:
       context: .
       dockerfile: docker/java/Dockerfile
     container_name: avisame-api
+    restart: always
     ports:
-      - "8081:8080"
+      - "8080:8080"
     depends_on:
       - db
     environment:
       # Importante: O host do DB passa a ser o nome do serviço 'db'
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/avisame_db?useTimezone=true&serverTimezone=America/Sao_Paulo&allowPublicKeyRetrieval=true&useSSL=false
-      SPRING_DATASOURCE_USERNAME: user_avisame
-      SPRING_DATASOURCE_PASSWORD: password_avisame
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/dbavisame?useTimezone=true&serverTimezone=America/Sao_Paulo
+      SPRING_DATASOURCE_USERNAME: USER-DB-AQUI # Aqui voçê pode definir seu usuário do banco de dados
+      SPRING_DATASOURCE_PASSWORD: SUA-SENHA-DB-AQUI  # Aqui você pode definir a sua senha
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
        # Variável de segurança JWT
-      API_SECURITY_TOKEN_SECRET: ${JWT_SECRET:-CHAVE-AQUI}
+      JWT_SECRET: ${JWT_SECRET:-CHAVE-JWT-AQUI} # Site bara gerar chave JWT: https://packtypebot.com.br/gerador/jwt.php
+
+      # Credenciais de E-mail (Exemplo com o Gmail do Google)
+      MAIL_HOST: smtp.gmail.com
+      MAIL_PORT: 587
+      MAIL_USERNAME: exemplo@gmail.com
+      MAIL_PASSWORD: wxyz wxyz wxyz wxyz # Exemplo de senha segura do Gmail
+
+      # Timezone - Fuso horário
+      TZ: America/Sao_Paulo
 
     networks:
-      - userapi-network
+      - avisame-network
 
 networks:
-  userapi-network:
+  avisame-network:
     driver: bridge
 
 volumes:

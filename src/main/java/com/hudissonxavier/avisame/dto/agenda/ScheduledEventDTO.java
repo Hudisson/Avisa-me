@@ -31,7 +31,7 @@ public class ScheduledEventDTO {
                 .title(this.title)
                 .description(this.description)
                 .eventDate(this.eventDate)
-                .isNotified(this.isNotified)
+                // .isNotified(this.isNotified)
                 .eventCreatedAt(this.eventCreatedAt)
                 .eventUpdatedAt(this.eventUpdatedAt)
                 .user(user)
