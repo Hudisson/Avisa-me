@@ -30,17 +30,34 @@ public class NotificationService {
         html.append("<h1>Olá, ").append(nome).append("!</h1>");
         html.append("<p>Aqui está o que tens planejado para hoje:</p>");
 
-        if (!tarefas.isEmpty()) {
+         if (!tarefas.isEmpty()) {
             html.append("<h3>📌 Afazeres do Dia:</h3><ul>");
-            tarefas.forEach(t -> html.append("<li>").append(t.getDescription()).append("</li>"));
+            tarefas.forEach(t ->
+                html
+                    .append("<li>")
+                    .append("<strong>")
+                    .append(t.getTitle())
+                    .append("</strong>")
+                    .append("<br>")
+                    .append(t.getDescription())
+                    .append("<hr>")
+                    .append("</li>")
+            );
             html.append("</ul>");
         }
 
         if (!eventos.isEmpty()) {
-            html.append("<h3>📅 Eventos Agendados:</h3><ul>");
-            eventos.forEach(e -> html.append("<li><strong>")
-                    .append(e.getTitle()).append("</strong>: ")
-                    .append(e.getDescription()).append("</li>"));
+            html.append("<h3>🎯 Eventos Agendados:</h3><ul>");
+            eventos.forEach(e ->
+                html
+                    .append("<li><strong>")
+                    .append(e.getTitle())
+                    .append("</strong> ")
+                    .append("<br>")
+                    .append(e.getDescription())
+                    .append("<hr>")
+                    .append("</li>")
+            );
             html.append("</ul>");
         }
 
