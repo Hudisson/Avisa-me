@@ -73,6 +73,7 @@ public class UserController {
         // Se a verificação passar, envia para a camada de serviço realizar o update
         HashMap<String, String> response = new HashMap<>();
         response.put("sucesso", "Informações atualizada com sucesso");
+        userService.update(dto.getId(), dto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
