@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
  * Intercepta todas as requisições HTTP uma única vez (OncePerRequestFilter) 
  * para validar a presença e a integridade do token Bearer no cabeçalho Authorization.
  */
-
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -29,6 +28,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final TokenBlacklistRepository blacklistRepository;
+
+    /**
+     * Define quais rotas NÃO devem passar por este filtro.
+     * Isso garante que requisições de Login e Registro sigam direto sem interferência.
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return path.contains("/auth/register") || path.contains("/auth/login");
+    }
 
     @Override
     protected void doFilterInternal(
@@ -56,7 +65,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                 new UsernamePasswordAuthenticationToken(
                                         user,
                                         null,
-                                        //Collections.emptyList(), // Local para definir Roles futuramente
                                         user.getAuthorities()
                                 );
 
@@ -65,7 +73,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     });
                     
                 } catch (Exception e) {
-                    // // Se o token for inválido ou expirado, garante que o contexto esteja limpo
+                    // Se o token for inválido ou expirado, garante que o contexto esteja limpo
                     SecurityContextHolder.clearContext();
                 }
             }
