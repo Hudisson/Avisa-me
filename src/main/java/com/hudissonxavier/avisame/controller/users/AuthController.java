@@ -54,13 +54,23 @@ public class AuthController {
         }catch (ResponseStatusException ex){
 
             /**
-             * Tratamento customizado para conflito de e-mail duplicado.
-             * Se o e-mail já existe, retorna conflito (409) com um JSON simples
+             * Tratamento customizado para conflito de e-mail duplicado e senha menor que 8 caracteres.
+             * Se o e-mail já existe, retorna (409) com um JSON simples
+             * Se a senha for menor que 8 caracteres retorna (406) com um JSON simples
              */
             HashMap<String, Object> response = new HashMap<>();
-            response.put("erro", "O e-mail informado já está em uso");
 
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+            if(ex.getStatusCode().equals(HttpStatus.CONFLICT)){
+                response.put("erro", "O e-mail informado já está em uso");
+            }
+
+            if(ex.getStatusCode().equals(HttpStatus.NOT_ACCEPTABLE)){
+                response.put("erro", "A senha deve ter um tamanho mínimo de 8 caracteres");
+            }
+           
+
+            return ResponseEntity.status(ex.getStatusCode()).body(response);
+            
         }
     }
 
