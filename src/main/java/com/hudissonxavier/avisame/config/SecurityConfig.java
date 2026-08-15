@@ -63,7 +63,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Permite a origem do Angular
+        // Permite a origem do seu projeto Angular
         configuration.setAllowedOrigins(List.of("http://localhost:4200")); 
         
         // Permite os principais métodos HTTP usados em REST
