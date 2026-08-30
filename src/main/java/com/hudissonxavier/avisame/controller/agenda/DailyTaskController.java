@@ -32,6 +32,7 @@ public class DailyTaskController {
 
     /**
      * Cria uma nova tarefa diária para o usuário autenticado.
+     * 
      * @param dto            Dados da tarefa (descrição e status).
      * @param authentication Objeto de autenticação contendo o UserModel.
      * @return 201 Created com os dados da tarefa
@@ -48,6 +49,7 @@ public class DailyTaskController {
 
     /**
      * Lista todos os afazeres ativos do usuário logado.
+     * 
      * @param authentication Objeto de autenticação contendo o UserModel.
      * @return 200 Lista de DTOs das tarefas.
      */
@@ -58,7 +60,21 @@ public class DailyTaskController {
     }
 
     /**
+     * Busca uma tarefa específica pelo ID, validando se pertence ao usuário logado.
+     * 
+     * @param id             UUID da tarefa.
+     * @param authentication Objeto de autenticação contendo o UserModel.
+     * @return 200 OK com o DTO da tarefa.
+     */
+    @GetMapping("/task/{id}")
+    public ResponseEntity<DailyTaskDTO> getById(@PathVariable UUID id, Authentication authentication) {
+        UserModel user = (UserModel) authentication.getPrincipal();
+        return ResponseEntity.ok(dailyTaskService.getById(id, user.getId()));
+    }
+
+    /**
      * Rota para editar uma tarefa
+     * 
      * @param id
      * @param taskDto
      * @param currentUser
@@ -82,6 +98,7 @@ public class DailyTaskController {
 
     /**
      * Remove uma tarefa específica, validando se pertence ao usuário logado.
+     * 
      * @param id UUID da tarefa a ser removida.
      */
     @DeleteMapping("/delete/{id}")
