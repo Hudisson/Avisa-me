@@ -26,18 +26,18 @@ public class UserConfigDTO {
     public UserConfigModel toModel(UserModel user) {
         return UserConfigModel.builder()
                 .user(user)
-                .preferredHour(this.preferredHour)
+                .preferredHour(this.preferredHour) //
                 .cronExpression(generateCron())
-                .configCreatedAt(this.configCreatedAt)
-                .configUpdatedAt(this.configUpdatedAt)
+                .configCreatedAt(this.configCreatedAt) //
+                .configUpdatedAt(this.configUpdatedAt) //
                 .build();
     }
 
     public static UserConfigDTO fromModel(UserConfigModel model) {
         UserConfigDTO dto = new UserConfigDTO();
-        dto.setPreferredHour(model.getPreferredHour());
-        dto.setConfigCreatedAt(model.getConfigCreatedAt());
-        dto.setConfigUpdatedAt(model.getConfigUpdatedAt());
+        dto.setPreferredHour(model.getPreferredHour()); //
+        dto.setConfigCreatedAt(model.getConfigCreatedAt());//
+        dto.setConfigUpdatedAt(model.getConfigUpdatedAt()); //
         dto.setId(model.getId());
         dto.setCronExpression(model.getCronExpression());
         return dto;

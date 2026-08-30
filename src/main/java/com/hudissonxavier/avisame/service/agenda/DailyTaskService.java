@@ -42,6 +42,19 @@ public class DailyTaskService {
                 .collect(Collectors.toList());
     }
 
+    // Método service para buscar uma única tarefa pelo ID, validando o dono
+    public DailyTaskDTO getById(UUID taskId, UUID userId) {
+        DailyTaskModel task = repository.findById(taskId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada"));
+
+        // Validação de segurança: a tarefa pertence ao usuário logado?
+        if (!task.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado a esta tarefa");
+        }
+
+        return DailyTaskDTO.fromModel(task);
+    }
+
     // Método service para deletar uma tarefa
     public void delete(UUID taskId, UUID userId) {
         DailyTaskModel task = repository.findById(taskId)
@@ -55,7 +68,7 @@ public class DailyTaskService {
         repository.delete(task);
     }
 
-     // Método service para atualizar/editar uma tarefa
+    // Método service para atualizar/editar uma tarefa
     @Transactional
     public DailyTaskDTO update(UUID taskId, DailyTaskDTO dto, UserModel user) {
         // Busca a tarefa existente

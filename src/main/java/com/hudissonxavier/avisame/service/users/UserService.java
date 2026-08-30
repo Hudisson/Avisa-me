@@ -40,7 +40,13 @@ public class UserService {
 
         // Regra de Negócio: Não permitir e-mails duplicados - verifica se o e-mail já existe
         if (repository.existsByEmail(dto.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já cadastrado");
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+
+        // Verifica se a senha é menor que 8 caracteres
+        if(dto.getPassword().length() < 8){
+            System.out.println("A senha deve ter um tamanho mínimo de 8 caracteres");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
 
         // Mapeamento de DTO para Entity com criptografia de senha - criação do novo usuário
