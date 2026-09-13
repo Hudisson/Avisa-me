@@ -31,12 +31,13 @@ public class ScheduledEventController {
 
     private final ScheduledEventService service;
 
-   /**
-    * Rota para registrar um novo evento para o usuário autenticado
-    * @param dto            Dados do evento a ser registrado no banco de dados
-    * @param authentication Objeto de autenticação contendo o UserModel (token JWT)
-    * @return 201 Created com os dados do evento
-    */
+    /**
+     * Rota para registrar um novo evento para o usuário autenticado
+     * 
+     * @param dto            Dados do evento a ser registrado no banco de dados
+     * @param authentication Objeto de autenticação contendo o UserModel (token JWT)
+     * @return 201 Created com os dados do evento
+     */
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody ScheduledEventDTO dto, Authentication authentication) {
 
@@ -53,9 +54,11 @@ public class ScheduledEventController {
     }
 
     /**
-     *  Rota que retorna os eventos agendados do usuário logado para a data atual
+     * Rota que retorna os eventos agendados do usuário logado para a data atual
+     * 
      * @param authentication
-     * @return 200 e a lista de DTOs dos eventos ou uma resposta customizada se não hover eventos
+     * @return 200 e a lista de DTOs dos eventos ou uma resposta customizada se não
+     *         hover eventos
      */
     @GetMapping("/today")
     public ResponseEntity<?> listToday(Authentication authentication) {
@@ -80,11 +83,12 @@ public class ScheduledEventController {
 
     /**
      * Rota para listar todos os eventos do usuário
+     * 
      * @param authentication
      * @return 200 e lista de todos os eventos
      */
     @GetMapping("/list")
-    public ResponseEntity<?> listAllEvents(Authentication authentication){
+    public ResponseEntity<?> listAllEvents(Authentication authentication) {
 
         UserModel user = (UserModel) authentication.getPrincipal();
 
@@ -96,16 +100,30 @@ public class ScheduledEventController {
 
             HashMap<String, String> response = new HashMap<>();
             response.put("message", "Você não tem eventos agendados");
-        
+
             return ResponseEntity.ok(response);
         }
-        
+
         return ResponseEntity.ok(events);
 
     }
 
     /**
+     * Busca um evento específico pelo ID, validando se pertence ao usuário logado.
+     * 
+     * @param id             UUID do evento.
+     * @param authentication Objeto de autenticação contendo o UserModel.
+     * @return 200 OK com o DTO do evento.
+     */
+    @GetMapping("/list/{id}")
+    public ResponseEntity<ScheduledEventDTO> getById(@PathVariable UUID id, Authentication authentication) {
+        UserModel user = (UserModel) authentication.getPrincipal();
+        return ResponseEntity.ok(service.getById(id, user.getId()));
+    }
+
+    /**
      * Rota para editar um evento
+     * 
      * @param id
      * @param eventDto
      * @param currentUser
@@ -113,13 +131,13 @@ public class ScheduledEventController {
      */
     @PutMapping("/edit/{id}")
     public ResponseEntity<?> update(
-        @PathVariable UUID id,
-        @RequestBody ScheduledEventDTO eventDto,
-        @AuthenticationPrincipal UserModel currentUser // Injeta o usuário logado automaticamente
-    ){
+            @PathVariable UUID id,
+            @RequestBody ScheduledEventDTO eventDto,
+            @AuthenticationPrincipal UserModel currentUser // Injeta o usuário logado automaticamente
+    ) {
 
         // Chama o serviço passando o DTO e o usuário autenticado
-        //ScheduledEventDTO updatedEvent = service.update(id, eventDto, currentUser);
+        // ScheduledEventDTO updatedEvent = service.update(id, eventDto, currentUser);
         service.update(id, eventDto, currentUser);
 
         // Define a mesnsagem de retorno
@@ -131,12 +149,13 @@ public class ScheduledEventController {
 
     }
 
-   /**
-    * Rota para Excluir um evento
-    * @param id
-    * @param authentication
-    * @return
-    */
+    /**
+     * Rota para Excluir um evento
+     * 
+     * @param id
+     * @param authentication
+     * @return
+     */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id, Authentication authentication) {
         UserModel user = (UserModel) authentication.getPrincipal();
