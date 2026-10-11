@@ -14,7 +14,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Filtro de Autenticação JWT.
@@ -22,12 +21,18 @@ import lombok.RequiredArgsConstructor;
  * para validar a presença e a integridade do token Bearer no cabeçalho Authorization.
  */
 @Component
-@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final TokenBlacklistRepository blacklistRepository;
+
+    public JwtAuthFilter(JwtService jwtService, UserRepository userRepository,
+            TokenBlacklistRepository blacklistRepository) {
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
+        this.blacklistRepository = blacklistRepository;
+    }
 
     /**
      * Define quais rotas NÃO devem passar por este filtro.

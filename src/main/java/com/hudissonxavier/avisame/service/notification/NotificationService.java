@@ -8,15 +8,17 @@ import com.hudissonxavier.avisame.model.agenda.DailyTaskModel;
 import com.hudissonxavier.avisame.model.agenda.ScheduledEventModel;
 import com.hudissonxavier.avisame.model.users.UserModel;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class NotificationService {
     
     private final EmailService emailService;
+
+    public NotificationService(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     public void processarEnvio(UserModel user, List<DailyTaskModel> tarefas, List<ScheduledEventModel> eventos) {
         String subject = "🔔 AvisaMe: Seu resumo de hoje";

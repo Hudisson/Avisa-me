@@ -13,15 +13,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.hudissonxavier.avisame.jwt.JwtAuthFilter;
 
-import lombok.RequiredArgsConstructor;
 import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@RequiredArgsConstructor
 public class SecurityConfig {
     
     private final JwtAuthFilter jwtAuthFilter;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -63,7 +65,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Permite a origem do seu projeto Angular
+        // Permite a origem do projeto Angular
         configuration.setAllowedOrigins(List.of("http://localhost:4200")); 
         
         // Permite os principais métodos HTTP usados em REST

@@ -3,7 +3,6 @@ package com.hudissonxavier.avisame.repository.agenda;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import com.hudissonxavier.avisame.model.agenda.TokenBlacklistModel;
 
@@ -13,7 +12,6 @@ import com.hudissonxavier.avisame.model.agenda.TokenBlacklistModel;
  * invalidados durante o processo de logout ou por questões de segurança.
  */
 
-@Repository
 public interface TokenBlacklistRepository extends JpaRepository<TokenBlacklistModel, UUID> {
     
     /**

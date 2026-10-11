@@ -7,11 +7,9 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import com.hudissonxavier.avisame.model.agenda.DailyTaskModel;
 
-@Repository
 public interface DailyTaskRepository extends JpaRepository<DailyTaskModel, UUID> {
     
     /**

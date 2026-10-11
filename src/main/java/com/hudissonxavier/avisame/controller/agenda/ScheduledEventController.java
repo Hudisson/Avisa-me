@@ -1,13 +1,8 @@
 package com.hudissonxavier.avisame.controller.agenda;
 
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,14 +17,16 @@ import com.hudissonxavier.avisame.dto.agenda.ScheduledEventDTO;
 import com.hudissonxavier.avisame.model.users.UserModel;
 import com.hudissonxavier.avisame.service.agenda.ScheduledEventService;
 
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/events")
-@RequiredArgsConstructor
 public class ScheduledEventController {
 
     private final ScheduledEventService service;
+
+    public ScheduledEventController(ScheduledEventService service) {
+        this.service = service;
+    }
 
     /**
      * Rota para registrar um novo evento para o usuário autenticado
@@ -39,18 +36,8 @@ public class ScheduledEventController {
      * @return 201 Created com os dados do evento
      */
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody ScheduledEventDTO dto, Authentication authentication) {
-
-        UserModel user = (UserModel) authentication.getPrincipal();
-
-        // Salva o evento para o respectivo usuário
-        service.create(dto, user);
-
-        // Define a mesnsagem de retorno
-        HashMap<String, String> response = new HashMap<>();
-        response.put("sucesso", "Evento criado com sucesso");
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<?> create(@RequestBody ScheduledEventDTO dto, @AuthenticationPrincipal UserModel user) {
+        return ResponseEntity.status(201).body(service.create(dto, user));
     }
 
     /**
@@ -61,24 +48,8 @@ public class ScheduledEventController {
      *         hover eventos
      */
     @GetMapping("/today")
-    public ResponseEntity<?> listToday(Authentication authentication) {
-
-        UserModel user = (UserModel) authentication.getPrincipal();
-
-        // Busca a lista de eventos da data atual
-        List<ScheduledEventDTO> events = service.listTodayEvents(user.getId());
-
-        // Retorna uma resposta customizada se a lista de eventos estiver vazia
-        if (events.isEmpty()) {
-
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "Você não tem eventos agendado para hoje");
-            response.put("date", LocalDate.now().toString());
-
-            return ResponseEntity.ok(response);
-        }
-
-        return ResponseEntity.ok(events);
+    public ResponseEntity<?> listToday(@AuthenticationPrincipal UserModel user) {
+        return ResponseEntity.ok(service.listTodayEvents(user.getId()));
     }
 
     /**
@@ -88,24 +59,8 @@ public class ScheduledEventController {
      * @return 200 e lista de todos os eventos
      */
     @GetMapping("/list")
-    public ResponseEntity<?> listAllEvents(Authentication authentication) {
-
-        UserModel user = (UserModel) authentication.getPrincipal();
-
-        // Buscar lista com todos eventos
-        List<ScheduledEventDTO> events = service.listAllFromUser(user.getId());
-
-        // Retorna uma resposta customizada se a lista de eventos estiver vazia
-        if (events.isEmpty()) {
-
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "Você não tem eventos agendados");
-
-            return ResponseEntity.ok(response);
-        }
-
-        return ResponseEntity.ok(events);
-
+    public ResponseEntity<?> listAllEvents(@AuthenticationPrincipal UserModel user) {
+        return ResponseEntity.ok(service.listAllFromUser(user.getId()));
     }
 
     /**
@@ -116,8 +71,7 @@ public class ScheduledEventController {
      * @return 200 OK com o DTO do evento.
      */
     @GetMapping("/list/{id}")
-    public ResponseEntity<ScheduledEventDTO> getById(@PathVariable UUID id, Authentication authentication) {
-        UserModel user = (UserModel) authentication.getPrincipal();
+    public ResponseEntity<ScheduledEventDTO> getById(@PathVariable UUID id, @AuthenticationPrincipal UserModel user) {
         return ResponseEntity.ok(service.getById(id, user.getId()));
     }
 
@@ -133,19 +87,9 @@ public class ScheduledEventController {
     public ResponseEntity<?> update(
             @PathVariable UUID id,
             @RequestBody ScheduledEventDTO eventDto,
-            @AuthenticationPrincipal UserModel currentUser // Injeta o usuário logado automaticamente
+            @AuthenticationPrincipal UserModel currentUser
     ) {
-
-        // Chama o serviço passando o DTO e o usuário autenticado
-        // ScheduledEventDTO updatedEvent = service.update(id, eventDto, currentUser);
-        service.update(id, eventDto, currentUser);
-
-        // Define a mesnsagem de retorno
-        HashMap<String, String> response = new HashMap<>();
-        response.put("sucesso", "Evento editado com sucesso");
-
-        // Retorna a mensagem de sucesso com status 200 OK
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(service.update(id, eventDto, currentUser));
 
     }
 
@@ -157,8 +101,7 @@ public class ScheduledEventController {
      * @return
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id, Authentication authentication) {
-        UserModel user = (UserModel) authentication.getPrincipal();
+    public ResponseEntity<Void> delete(@PathVariable UUID id, @AuthenticationPrincipal UserModel user) {
         service.delete(id, user.getId());
         return ResponseEntity.noContent().build();
     }

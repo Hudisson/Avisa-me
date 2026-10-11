@@ -18,7 +18,6 @@ import com.hudissonxavier.avisame.repository.agenda.ScheduledEventRepository;
 import com.hudissonxavier.avisame.repository.agenda.UserConfigRepository;
 import com.hudissonxavier.avisame.service.notification.NotificationService;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -27,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class RoutineScheduler {
 
@@ -35,6 +33,14 @@ public class RoutineScheduler {
     private final DailyTaskRepository dailyTaskRepository;
     private final ScheduledEventRepository eventRepository;
     private final NotificationService notificationService;
+
+    public RoutineScheduler(UserConfigRepository configRepository, DailyTaskRepository dailyTaskRepository,
+            ScheduledEventRepository eventRepository, NotificationService notificationService) {
+        this.configRepository = configRepository;
+        this.dailyTaskRepository = dailyTaskRepository;
+        this.eventRepository = eventRepository;
+        this.notificationService = notificationService;
+    }
 
     /**
      * Método agendado para rodar a cada minuto (0 segundos de cada minuto).

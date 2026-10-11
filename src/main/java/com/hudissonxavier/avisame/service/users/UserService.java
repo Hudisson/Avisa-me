@@ -1,6 +1,7 @@
 package com.hudissonxavier.avisame.service.users;
 
 import java.util.UUID;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,10 +11,10 @@ import org.springframework.web.server.ResponseStatusException;
 import com.hudissonxavier.avisame.dto.users.UpdateUserRequestDTO;
 import com.hudissonxavier.avisame.dto.users.UserRequestDTO;
 import com.hudissonxavier.avisame.dto.users.UserResponseDTO;
+import com.hudissonxavier.avisame.service.ServiceResponse;
 import com.hudissonxavier.avisame.model.users.UserModel;
 import com.hudissonxavier.avisame.repository.users.UserRepository;
 
-import lombok.RequiredArgsConstructor;
 
 /**
  * Camada de serviço para gerenciamento de usuários (CRUD).
@@ -22,12 +23,15 @@ import lombok.RequiredArgsConstructor;
  */
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
     
     private final UserRepository repository;
     private final PasswordEncoder encoder;
 
+    public UserService(UserRepository repository, PasswordEncoder encoder) {
+        this.repository = repository;
+        this.encoder = encoder;
+    }
 
     /**
      * Registra um novo usuário no sistema.
@@ -36,7 +40,7 @@ public class UserService {
      * @return UserResponseDTO Dados públicos do usuário criado.
      * @throws ResponseStatusException 409 se o e-mail já estiver em uso.
      */
-    public UserResponseDTO create(UserRequestDTO dto) {
+    public Map<String, String> create(UserRequestDTO dto) {
 
         // Regra de Negócio: Não permitir e-mails duplicados - verifica se o e-mail já existe
         if (repository.existsByEmail(dto.getEmail())) {
@@ -59,8 +63,22 @@ public class UserService {
         // Salva o novo usuário no banco
         repository.save(user);
 
-        // Retorna a resposta com os dados do usuário
-        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getUserCreatedAt(), user.getUserUpdatedAt());
+        return ServiceResponse.message("sucesso", "Conta criada com sucesso");
+    }
+
+    public UserResponseDTO getById(UUID id) {
+        UserModel user = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+        return toResponse(user);
+    }
+
+    public Map<String, String> updateProfile(UUID authenticatedUserId, UpdateUserRequestDTO dto) {
+        if (!authenticatedUserId.equals(dto.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado");
+        }
+
+        update(authenticatedUserId, dto);
+        return ServiceResponse.message("sucesso", "Informações atualizada com sucesso");
     }
 
     /**
@@ -95,7 +113,7 @@ public class UserService {
         }
 
         repository.save(user);
-        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(),user.getUserCreatedAt(), user.getUserUpdatedAt());
+        return toResponse(user);
     }
 
     /**
@@ -108,5 +126,10 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
         repository.deleteById(id);
+    }
+
+    private UserResponseDTO toResponse(UserModel user) {
+        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(),
+                user.getUserCreatedAt(), user.getUserUpdatedAt());
     }
 }

@@ -2,6 +2,7 @@ package com.hudissonxavier.avisame.service.agenda;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -13,37 +14,49 @@ import com.hudissonxavier.avisame.dto.agenda.ScheduledEventDTO;
 import com.hudissonxavier.avisame.model.agenda.ScheduledEventModel;
 import com.hudissonxavier.avisame.model.users.UserModel;
 import com.hudissonxavier.avisame.repository.agenda.ScheduledEventRepository;
+import com.hudissonxavier.avisame.service.ServiceResponse;
 
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class ScheduledEventService {
 
     private final ScheduledEventRepository repository;
 
+    public ScheduledEventService(ScheduledEventRepository repository) {
+        this.repository = repository;
+    }
+
     // Método service para criar um evento
-    public ScheduledEventDTO create(ScheduledEventDTO dto, UserModel user) {
+    public Map<String, String> create(ScheduledEventDTO dto, UserModel user) {
         dto.setIsNotified(false);
         ScheduledEventModel model = dto.toModel(user);
         repository.save(model);
-        return ScheduledEventDTO.fromModel(model);
+        return ServiceResponse.message("sucesso", "Evento criado com sucesso");
     }
 
     // Método service para listar eventos da data atual
-    public List<ScheduledEventDTO> listTodayEvents(UUID userId) {
-        return repository.findByUserIdAndEventDate(userId, LocalDate.now())
+    public Object listTodayEvents(UUID userId) {
+        LocalDate today = LocalDate.now();
+        List<ScheduledEventDTO> events = repository.findByUserIdAndEventDate(userId, today)
                 .stream()
                 .map(ScheduledEventDTO::fromModel)
                 .collect(Collectors.toList());
+        if (events.isEmpty()) {
+            return Map.of("message", "Você não tem eventos agendado para hoje", "date", today.toString());
+        }
+        return events;
     }
 
     // Método service para listar todos os eventos do usuário logado
-    public List<ScheduledEventDTO> listAllFromUser(UUID userId) {
-        return repository.findByUserId(userId)
+    public Object listAllFromUser(UUID userId) {
+        List<ScheduledEventDTO> events = repository.findByUserId(userId)
                 .stream()
                 .map(ScheduledEventDTO::fromModel)
                 .collect(Collectors.toList());
+        if (events.isEmpty()) {
+            return Map.of("message", "Você não tem eventos agendados");
+        }
+        return events;
     }
 
     // Método service para buscar um único evento pelo ID, validando o dono
@@ -59,7 +72,7 @@ public class ScheduledEventService {
     }
 
     // Método service para editar um evento
-    public ScheduledEventDTO update(UUID enventID, ScheduledEventDTO dto, UserModel user) {
+    public Map<String, String> update(UUID enventID, ScheduledEventDTO dto, UserModel user) {
         // Buscar eventos existentes
         ScheduledEventModel event = repository.findById(enventID)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento não encontrado"));
@@ -77,7 +90,7 @@ public class ScheduledEventService {
 
         repository.save(event);
 
-        return ScheduledEventDTO.fromModel(event);
+        return ServiceResponse.message("sucesso", "Evento editado com sucesso");
     }
 
     // Método service para deletar um evento
