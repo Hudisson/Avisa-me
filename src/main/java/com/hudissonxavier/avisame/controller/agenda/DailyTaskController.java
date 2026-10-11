@@ -1,12 +1,9 @@
 package com.hudissonxavier.avisame.controller.agenda;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,14 +18,16 @@ import com.hudissonxavier.avisame.dto.agenda.DailyTaskDTO;
 import com.hudissonxavier.avisame.model.users.UserModel;
 import com.hudissonxavier.avisame.service.agenda.DailyTaskService;
 
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/tasks")
-@RequiredArgsConstructor
 public class DailyTaskController {
 
     private final DailyTaskService dailyTaskService;
+
+    public DailyTaskController(DailyTaskService dailyTaskService) {
+        this.dailyTaskService = dailyTaskService;
+    }
 
     /**
      * Cria uma nova tarefa diária para o usuário autenticado.
@@ -38,13 +37,8 @@ public class DailyTaskController {
      * @return 201 Created com os dados da tarefa
      */
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody DailyTaskDTO dto, Authentication authentication) {
-
-        UserModel user = (UserModel) authentication.getPrincipal();
-        dailyTaskService.create(dto, user);
-        HashMap<String, String> response = new HashMap<>();
-        response.put("sucesso", "Tarefa criada com sucesso");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<?> create(@RequestBody DailyTaskDTO dto, @AuthenticationPrincipal UserModel user) {
+        return ResponseEntity.status(201).body(dailyTaskService.create(dto, user));
     }
 
     /**
@@ -54,8 +48,7 @@ public class DailyTaskController {
      * @return 200 Lista de DTOs das tarefas.
      */
     @GetMapping("/my-tasks")
-    public ResponseEntity<List<DailyTaskDTO>> listMyTasks(Authentication authentication) {
-        UserModel user = (UserModel) authentication.getPrincipal();
+    public ResponseEntity<List<DailyTaskDTO>> listMyTasks(@AuthenticationPrincipal UserModel user) {
         return ResponseEntity.ok(dailyTaskService.listAllFromUser(user.getId()));
     }
 
@@ -67,8 +60,7 @@ public class DailyTaskController {
      * @return 200 OK com o DTO da tarefa.
      */
     @GetMapping("/task/{id}")
-    public ResponseEntity<DailyTaskDTO> getById(@PathVariable UUID id, Authentication authentication) {
-        UserModel user = (UserModel) authentication.getPrincipal();
+    public ResponseEntity<DailyTaskDTO> getById(@PathVariable UUID id, @AuthenticationPrincipal UserModel user) {
         return ResponseEntity.ok(dailyTaskService.getById(id, user.getId()));
     }
 
@@ -84,16 +76,9 @@ public class DailyTaskController {
     public ResponseEntity<?> update(
             @PathVariable UUID id,
             @RequestBody DailyTaskDTO taskDto,
-            @AuthenticationPrincipal UserModel currentUser // Injeta o usuário logado automaticamente
+            @AuthenticationPrincipal UserModel currentUser
     ) {
-        // Chama o serviço passando o DTO e o usuário autenticado
-        dailyTaskService.update(id, taskDto, currentUser);
-
-        // Definie a mensagem de retorno
-        HashMap<String, String> response = new HashMap<>();
-        response.put("sucesso", "Tarefa editada com sucesso");
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(dailyTaskService.update(id, taskDto, currentUser));
     }
 
     /**
@@ -102,8 +87,7 @@ public class DailyTaskController {
      * @param id UUID da tarefa a ser removida.
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id, Authentication authentication) {
-        UserModel user = (UserModel) authentication.getPrincipal();
+    public ResponseEntity<Void> delete(@PathVariable UUID id, @AuthenticationPrincipal UserModel user) {
         dailyTaskService.delete(id, user.getId());
         return ResponseEntity.noContent().build();
     }

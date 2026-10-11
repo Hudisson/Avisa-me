@@ -13,7 +13,6 @@ import com.hudissonxavier.avisame.model.users.UserModel;
 import com.hudissonxavier.avisame.repository.agenda.TokenBlacklistRepository;
 import com.hudissonxavier.avisame.repository.users.UserRepository;
 
-import lombok.RequiredArgsConstructor;
 
 /**
  * Serviço responsável por gerenciar os processos de autenticação e sessão.
@@ -22,13 +21,20 @@ import lombok.RequiredArgsConstructor;
  */
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
     
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final TokenBlacklistRepository blacklistRepository;
     private final PasswordEncoder encoder;
+
+    public AuthService(UserRepository userRepository, JwtService jwtService,
+            TokenBlacklistRepository blacklistRepository, PasswordEncoder encoder) {
+        this.userRepository = userRepository;
+        this.jwtService = jwtService;
+        this.blacklistRepository = blacklistRepository;
+        this.encoder = encoder;
+    }
 
     /**
      * Realiza a autenticação do usuário.
@@ -59,6 +65,7 @@ public class AuthService {
      * @param token O token JWT que deve ser revogado.
      */
     public void logout(String token) {
+        token = token.substring(7);
         blacklistRepository.save(TokenBlacklistModel.builder().token(token).build());
     }
 }

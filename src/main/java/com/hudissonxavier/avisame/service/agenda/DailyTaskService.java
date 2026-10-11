@@ -1,6 +1,7 @@
 package com.hudissonxavier.avisame.service.agenda;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -12,9 +13,9 @@ import com.hudissonxavier.avisame.dto.agenda.DailyTaskDTO;
 import com.hudissonxavier.avisame.model.agenda.DailyTaskModel;
 import com.hudissonxavier.avisame.model.users.UserModel;
 import com.hudissonxavier.avisame.repository.agenda.DailyTaskRepository;
+import com.hudissonxavier.avisame.service.ServiceResponse;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Serviço para gerenciamento de afazeres diários.
@@ -22,16 +23,19 @@ import lombok.RequiredArgsConstructor;
  */
 
 @Service
-@RequiredArgsConstructor
 public class DailyTaskService {
 
     private final DailyTaskRepository repository;
 
+    public DailyTaskService(DailyTaskRepository repository) {
+        this.repository = repository;
+    }
+
     // Método service para criar uma tarefa
-    public DailyTaskDTO create(DailyTaskDTO dto, UserModel user) {
+    public Map<String, String> create(DailyTaskDTO dto, UserModel user) {
         DailyTaskModel model = dto.toModel(user);
         repository.save(model);
-        return DailyTaskDTO.fromModel(model);
+        return ServiceResponse.message("sucesso", "Tarefa criada com sucesso");
     }
 
     // Método service para listar as tarefas do usuário logado por dia da semana
@@ -70,7 +74,7 @@ public class DailyTaskService {
 
     // Método service para atualizar/editar uma tarefa
     @Transactional
-    public DailyTaskDTO update(UUID taskId, DailyTaskDTO dto, UserModel user) {
+    public Map<String, String> update(UUID taskId, DailyTaskDTO dto, UserModel user) {
         // Busca a tarefa existente
         DailyTaskModel task = repository.findById(taskId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada"));
@@ -94,7 +98,7 @@ public class DailyTaskService {
         repository.save(task);
 
         // Retorna o DTO atualizado
-        return DailyTaskDTO.fromModel(task);
+        return ServiceResponse.message("sucesso", "Tarefa editada com sucesso");
     }
 
 }

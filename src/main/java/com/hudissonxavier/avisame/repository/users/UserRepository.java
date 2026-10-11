@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import com.hudissonxavier.avisame.model.users.UserModel;
 
@@ -18,7 +17,6 @@ import com.hudissonxavier.avisame.model.users.UserModel;
  * - Verificação de existência de registros para evitar duplicidade.
  */
 
-@Repository
 public interface UserRepository extends JpaRepository<UserModel, UUID> {
     
     /**

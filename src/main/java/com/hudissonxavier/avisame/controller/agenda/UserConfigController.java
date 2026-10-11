@@ -1,10 +1,6 @@
 package com.hudissonxavier.avisame.controller.agenda;
 
-import java.util.HashMap;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,13 +8,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.hudissonxavier.avisame.dto.agenda.UserConfigDTO;
 import com.hudissonxavier.avisame.model.users.UserModel;
 import com.hudissonxavier.avisame.service.agenda.UserConfigService;
 
-import lombok.RequiredArgsConstructor;
 
 /**
  * Controller para gerenciamento das preferências de notificação.
@@ -28,10 +22,13 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/config")
-@RequiredArgsConstructor
 public class UserConfigController {
 
     private final UserConfigService service;
+
+    public UserConfigController(UserConfigService service) {
+        this.service = service;
+    }
 
     /**
      * Rota para salva o horário desejado para o envio dos e-mails
@@ -41,18 +38,8 @@ public class UserConfigController {
      */
     @PostMapping("/create")
     public ResponseEntity<?> createConfigHour(@RequestBody UserConfigDTO dto,
-            Authentication authentication) {
-        UserModel user = (UserModel) authentication.getPrincipal();
-
-        // Sava a perefereência de horário do usuário
-        service.saveConfig(dto, user);
-
-        // Definir a mensagem de retorno
-        HashMap<String, String> response = new HashMap<>();
-        response.put("sucesso", "Horário para receber as notificações definido com sucesso");
-        
-        // Retona 201 e a mensagem de retorno
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            @AuthenticationPrincipal UserModel user) {
+        return ResponseEntity.status(201).body(service.saveConfig(dto, user));
 
     }
 
@@ -62,24 +49,8 @@ public class UserConfigController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<?> getConfig(Authentication authentication) {
-
-        try {
-
-            UserModel user = (UserModel) authentication.getPrincipal();
-            UserConfigDTO config = service.findByUserId(user.getId());
-            return ResponseEntity.ok(config);
-
-        } catch (ResponseStatusException e) {
-
-            // Retorna uma mensagem personalizada se o service lança 404
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "Você ainda não configurou um horário para receber as notificações!");
-            response.put("status", "405"); // código de status definido pelo programado
-            return ResponseEntity.ok(response);
-
-        }
-
+    public ResponseEntity<?> getConfig(@AuthenticationPrincipal UserModel user) {
+        return ResponseEntity.ok(service.findByUserId(user.getId()));
     }
 
     /**
@@ -91,8 +62,7 @@ public class UserConfigController {
     @PutMapping("/update-time")
     public ResponseEntity<String> updateTime(@RequestBody UserConfigDTO dto, @AuthenticationPrincipal UserModel user) {
 
-        service.updateNotificationTime(dto, user);
-        return ResponseEntity.ok("Horário de notificação atualizado com sucesso!");
+        return ResponseEntity.ok(service.updateNotificationTime(dto, user));
 
     }
 }
